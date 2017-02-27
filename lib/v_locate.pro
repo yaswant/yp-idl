@@ -47,7 +47,7 @@ function v_locate, vector, value, SORT=s, TIDL=tidl
 ;   0   0   1   1   3 
 
 ; $Id: V_LOCATE.pro,v 1.0 03/04/2008 09:53 yaswant Exp $
-; V_LOCATE.pro Yaswant Pradhan (c) Crown copyright Met Office
+; V_LOCATE.pro Yaswant Pradhan
 ; Last modIFication: Apr 08    
 ;-
 
