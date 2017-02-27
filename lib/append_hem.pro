@@ -36,7 +36,6 @@ function append_hem, array, LATITUDE=latitude, LONGITUDE=longitude, $
 ;   String manipulation, Plotting
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  12-Jul-2010 14:40:56 Created. Yaswant Pradhan.
 ;
