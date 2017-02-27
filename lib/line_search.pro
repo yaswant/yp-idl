@@ -50,7 +50,6 @@ function line_search, array, pattern, $
 ;   
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  Mar 2, 2012 2:02:10 PM Created. Yaswant Pradhan.
 ;
