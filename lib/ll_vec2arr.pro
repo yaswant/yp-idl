@@ -31,7 +31,6 @@ pro ll_vec2arr, lon_1d, lat_1d, lon_2d, lat_2d
 ;
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  10-Nov-2010 11:00:58 Created. Yaswant Pradhan.
 ;
