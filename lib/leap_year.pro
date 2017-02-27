@@ -38,7 +38,7 @@ FUNCTION leap_year, Year, VERBOSE=verb
 ; 
 ; -------------------------------------------------------------------------
 ; $Id: leap_year.pro,v 0.1 2010-02-12 18:31:11 yaswant Exp $
-; leap_year.pro Yaswant Pradhan (c) Crown Copyright Met Office
+; leap_year.pro Yaswant Pradhan
 ; Last modification: 
 ; -------------------------------------------------------------------------
 ;- 
