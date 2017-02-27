@@ -54,7 +54,6 @@ function int2bit, Value, nbit,  $
 ;
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  07-Mar-2011 Created. Yaswant Pradhan.
 ;  08-Mar-2012 Vectorised version. YP.
