@@ -43,7 +43,6 @@
 ;     String manipulation
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  Jan 28, 2012 4:45:46 PM Created. Yaswant Pradhan.
 ;
