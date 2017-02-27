@@ -135,7 +135,6 @@ PRO loadmyct, index, BOTTOM=bottom, FILE=ct_file, NCOLORS=ncolors, $
 ;   Plotting
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  03-Apr-2008 09:53:37 Created. Yaswant Pradhan.
 ;  11-Dec-2010 Added Brewer keyword. YP.
