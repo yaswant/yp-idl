@@ -41,7 +41,6 @@ function doy, dd,mm,yyyy, UTC=utc, QUIET=quiet, ERR_INP=err_inp
 ;     Date and Time
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  13-May-2008 15:17:12 Created. Yaswant Pradhan.
 ;  03-May-2011  Added UTC keyword. YP.
