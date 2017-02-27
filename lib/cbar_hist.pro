@@ -54,7 +54,7 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
 ;               color bar      
 ;
 ; $Id: CBAR_HIST.pro,v 1.0 24/02/2009 12:30:03 yaswant Exp $
-; CBAR_HIST.pro Yaswant Pradhan (c) Crown Copyright Met Office
+; CBAR_HIST.pro Yaswant Pradhan
 ; Last modIFication: 
 ; 21.09.2010  : Add keyword YCHARSIZE (YP)
 ;             : Add keyword CBHEIGHT (YP)
