@@ -53,7 +53,6 @@ FUNCTION fltscl,  Array, HIGH=high, LOW=low, CLIP_LIMIT=clip_limit, $
 ;     Numerical scaling
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  07-Mar-2007 09:22:11 Created. Yaswant Pradhan. U Plymouth.
 ;  xx-Mar-2009 Added CLIP_LIMIT keyword. YP.
