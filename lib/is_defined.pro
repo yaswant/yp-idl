@@ -35,7 +35,7 @@ function is_defined, expr
 ;     IDL returns false, even though def has a defined value (0)            
 ;
 ; $Id: IS_DEFINED.pro,v1.0 03/06/2009 11:12:29 yaswant Exp $      
-; IS_DEFINED.pro Yaswant Pradhan (c) Crown copyright Met Office   
+; IS_DEFINED.pro Yaswant Pradhan
 ; Last modification:                                              
 ;-
    
