@@ -123,7 +123,6 @@ pro cbar,                       $
 ;     plotting
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  20-Jul-2010 12:11:24 Created. Yaswant Pradhan.
 ;  17-Feb-2012 Add XMargin, Y Margin keywords. YP. 
