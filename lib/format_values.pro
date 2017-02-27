@@ -39,7 +39,6 @@ function format_values, Array, DecimalPlace, AXISV=axisv
 ;     String manipulaion, Data formatting
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  01-Sep-2009 18:28:03 Created. Yaswant Pradhan.
 ;  06-Oct-2011 Update header. YP.
