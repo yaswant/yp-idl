@@ -30,7 +30,6 @@ function h5d_test, FileName, Name, GROUP=group
 ;     HDF5
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  18-Apr-2011 11:46:18 Created. Yaswant Pradhan.
 ;
