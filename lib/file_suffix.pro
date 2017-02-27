@@ -44,7 +44,6 @@ FUNCTION file_suffix, Path, PATTERN=patt, PREFIX=prefix, KEEP_PATH=keep_path
 ;     String manipulation
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-; :COPYRIGHT: (c) Crown Copyright Met Office
 ; :HISTORY:
 ;  11-Oct-2010 12:23:54 Created. Yaswant Pradhan.
 ;  19-Jul-2011 Added KEEP_PATH keyword and bug fixes. YP.
