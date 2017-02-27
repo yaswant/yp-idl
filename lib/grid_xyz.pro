@@ -81,7 +81,7 @@ function grid_xyz, x, y, z,    $
 ;   As in VALUE_LOCATE() function (not recommended for fine resolution grids)
 ; 
 ; $Id: GRID_XYZ.pro,v 1.0 02/04/2008 15:07:29 yaswant Exp $
-; GRID_XYZ.pro Yaswant Pradhan (c) Crown copyright Met Office
+; GRID_XYZ.pro Yaswant Pradhan
 ; Last modification: Apr 08    
 ;   Jun 2009 - added filter keyword. YP
 ;   Oct 2010 - added CLIP_EDGE keyword. YP
