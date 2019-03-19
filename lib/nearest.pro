@@ -1,19 +1,12 @@
-FUNCTION nearest, xArr, yArr, x, y, $    
-    SEARCHRADIUS=SearchRadius,  $
-    NPOINTS=nPoints,            $
-    REGULAR=regular,            $
-    COUNT=cnt,                  $
-    FAIL=fail,                  $
-    VERBOSE=verbose
 ;+
 ; :NAME:
-;    	nearest
+;       nearest
 ;
 ; :PURPOSE:
 ;       Returns the nearest point of a given (x,y) pair from a set of
-;       (X,Y) arrays on a Cartesian plane. 
+;       (X,Y) arrays on a Cartesian plane.
 ;       For 2D X and Y:
-;           returns the column and row indices indicating the 
+;           returns the column and row indices indicating the
 ;           [left,right,bottom,top] position
 ;       For vector X and Y:
 ;           returns the indices of (nPoints) nearest points
@@ -31,15 +24,15 @@ FUNCTION nearest, xArr, yArr, x, y, $
 ;
 ;
 ; :KEYWORDS:
-;    SEARCHRADIUS (in:value) Search reaiud from (x,y) search position 
+;    SEARCHRADIUS (in:value) Search reaiud from (x,y) search position
 ;                   (def: 0.5)
-;    NPOINTS (in:value) number of nearest samples to search (def: 0 which 
+;    NPOINTS (in:value) number of nearest samples to search (def: 0 which
 ;                   returns first nearest point)
 ;    /REGULAR - Set this keyword if xArr and yArr are vectors of inequal length,
 ;               but representing regularly spaced grid point values.
 ;    COUNT (out:variable) Named variable to store the number of nearest points
 ;               found in the xArr,yArr
-;    FAIL (out:variable) Named variable to store fails status 
+;    FAIL (out:variable) Named variable to store fails status
 ;               (1: Fail, 0:Success)
 ;    /VERBOSE - Verbose mode
 ;
@@ -58,6 +51,14 @@ FUNCTION nearest, xArr, yArr, x, y, $
 ;  Aug 15, 2012 2:41:59 PM Created. Yaswant Pradhan.
 ;
 ;-
+FUNCTION nearest, xArr, yArr, x, y, $
+    SEARCHRADIUS=SearchRadius,      $
+    NPOINTS=nPoints,                $
+    REGULAR=regular,                $
+    COUNT=cnt,                      $
+    FAIL=fail,                      $
+    VERBOSE=verbose
+
 
 
 fail = 0b
@@ -94,7 +95,7 @@ endif
 if _r then begin
     if nEq then begin
         nX  = xNel
-        nY  = yNel 
+        nY  = yNel
         ll_vec2arr, xArr, yArr, xx,yy
         xV  = REFORM(xx, N_ELEMENTS(xx))
         yV  = REFORM(yy, N_ELEMENTS(yy))
@@ -125,7 +126,7 @@ pos = WHERE(distance eq min_dis) ; Nearest Points
 
 
 if (min_dis gt SearchRadius) then begin
-    if _v then begin    
+    if _v then begin
         print,'Minimum Distance: ',min_dis
         message,'No points found within SearchRadius='+$
             STRTRIM(SearchRadius,2),/CONT
@@ -139,14 +140,14 @@ if (_r or (xDim eq 2 and yDim eq 2)) then begin
     ctr    = LONARR(2)
     ctr[0] = pos[0] mod nX
     ctr[1] = pos[0] / nX
-    
+
     ret = (nPoints eq 0) ? LONARR(2) : LONARR(4)  ; [x0,y0]  OR [x1,x2, y1,y2]
     npr = [1,-1,1,-1]*nPoints
     ret = (nPoints eq 0) $
           ? ctr $
           : ([ctr[[0,0]],ctr[[1,1]]] - npr) > [0,0,0,0] < [nX,nX,nY,nY]
     cnt = (nPoints eq 0) ? 1 : (ret[1]-ret[0]+1)*(ret[3]-ret[2]+1)
-    
+
 ;    print,'X/Y',x,y,cnt
 ;    print,xArr[ret[0]:ret[1],ret[2]:ret[3]]
 ;    print,yArr[ret[0]:ret[1],ret[2]:ret[3]]

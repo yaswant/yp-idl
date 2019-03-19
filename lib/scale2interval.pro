@@ -1,4 +1,3 @@
-FUNCTION scale2interval, array, intervals, POSITION=pos, PDF=pdf
 ;+
 ; :NAME:
 ;     scale2interval
@@ -11,7 +10,7 @@ FUNCTION scale2interval, array, intervals, POSITION=pos, PDF=pdf
 ;     Result = SCALE2INTERVAL( Array, intervals [,POSITION=Variable] [,PDF=Variable])
 ;
 ;  :PARAMS:
-;    array (IN: Array) Input array to rescale to given intervals    
+;    array (IN: Array) Input array to rescale to given intervals
 ;    intervals (IN: Array) Interval array to which the Array will be mapped
 ;
 ;
@@ -42,20 +41,22 @@ FUNCTION scale2interval, array, intervals, POSITION=pos, PDF=pdf
 ;
 ;-
 
+FUNCTION scale2interval, array, intervals, POSITION=pos, PDF=pdf
+
   if( N_PARAMS() LT 2 ) then $
   message,' Syntax: Result = SCALE2INTERVAL( Array, Intervals [,POSITION=Variable] [,PDF=Variable] )'
-    
-  pos = VALUE_LOCATE( intervals, array )  
+
+  pos = VALUE_LOCATE( intervals, array )
   scaled_data = intervals[pos]
-  
-  if ARG_PRESENT(pdf) then begin    
+
+  if ARG_PRESENT(pdf) then begin
     pdf = MAKE_ARRAY(N_ELEMENTS(intervals))
     for i=0,N_ELEMENTS(intervals)-1 do begin
       doit = WHERE(scaled_data eq intervals[i], n)
       pdf[i] = n
     endfor
   endif
-  
+
   return, scaled_data
-  
+
 END

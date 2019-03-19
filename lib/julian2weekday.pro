@@ -1,7 +1,6 @@
-function julian2weekday, JulianDay, LONG=long
 ;+
 ; :NAME:
-;    	julian2weekday
+;       julian2weekday
 ;
 ; :PURPOSE:
 ;     Converts julian day(s) to Week day(s)
@@ -9,7 +8,7 @@ function julian2weekday, JulianDay, LONG=long
 ; :SYNTAX:
 ;     Result = julian2weekday( [JulianDay] [,/LONG] )
 ;
-;	 :PARAMS:
+;    :PARAMS:
 ;    JulianDay (IN:Array) Double precision Julian day array
 ;
 ;
@@ -40,17 +39,19 @@ function julian2weekday, JulianDay, LONG=long
 ;
 ;-
 
+function julian2weekday, JulianDay, LONG=long
+
     ; Parse argument:
     if (N_PARAMS() lt 1) then begin
         message,'Result = julian2weekday( [JulianDay] [,/LONG] )' + $
             string(10b)+'-- Returning result for Today --',/CONTINUE,/NOPREFIX
-            
+
         JulianDay = SYSTIME(/JULIAN)
     endif
-    
+
     fmt = KEYWORD_SET(long) ? '(C(CDwA0))' : '(C(CDwA))'
-    
+
     ; Return result:
     return, STRING(JulianDay, FORMAT=fmt)
-    
+
 end

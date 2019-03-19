@@ -4,7 +4,8 @@
 ;
 ; PURPOSE:
 ;
-;       This function provides a symbol catalog for specifying a number of plotting symbols.
+;       This function provides a symbol catalogue for specifying a number of
+;       plotting symbols.
 ;
 ; CATEGORY:
 ;
@@ -143,12 +144,12 @@ FUNCTION SYMCAT, theSymbol, THICK=thick, COLOR=color
 
    ; Use user defined symbol by default.
    result = 8
-   
+
 
    CASE theSymbol OF
 
        0  : result = 0                                                                               ; No symbol.
-;       1  : result = 1   
+;       1  : result = 1
        1  : UserSym, [1, -1, 0, 0, 0], [0, 0, 0, -1, 1], THICK=thick, COLOR=color                    ; Plus sign.
        2  : result = 2                                                                               ; Asterisk.
        3  : result = 3                                                                               ; Dot (period).

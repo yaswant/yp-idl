@@ -1,14 +1,13 @@
-function is_defined, expr
 ;+
 ; :NAME:
-;    	is_defined
+;       is_defined
 ;
 ; :PURPOSE:
 ;       The is_defined function returns a Boolean value based on the value
 ;       of the specified expression. It returns a True (1) if its argument
 ;       is defined including zero, and False (0) otherwise. This function
 ;       differs from KEYWORD_SET in the following way:
-;       
+;
 ;       is_defined function returns True (1b) if:
 ;           * Expression is a value.
 ;           * Expression is a scalar or array.
@@ -30,17 +29,17 @@ function is_defined, expr
 ;       None.
 ;
 ; :EXAMPLES:
-;       Suppose that you are writing an IDL procedure that has the          
-;       following procedure definition line:                                
-;       PRO myproc, DEF1=def1                                               
-;       The following command could be used to execute a set of commands    
-;       only if the keyword DEF1 is set (i.e., it is present)               
+;       Suppose that you are writing an IDL procedure that has the
+;       following procedure definition line:
+;       PRO myproc, DEF1=def1
+;       The following command could be used to execute a set of commands
+;       only if the keyword DEF1 is set (i.e., it is present)
 ; IDL> def1=0
-; IDL> print, IS_DEFINED(def1)                                 
+; IDL> print, IS_DEFINED(def1)
 ;       1
 ; IDL> print, KEYWORD_SET(def1)
-;       0                                
-;     IDL returns false, even though def1 has a value (0)            
+;       0
+;     IDL returns false, even though def1 has a value (0)
 ;
 ;
 ; :CATEGORIES:
@@ -53,7 +52,7 @@ function is_defined, expr
 ;  Jul 2010 Updated header. YP.
 ;
 ;-
-   
+
+function is_defined, expr
   return, (n_elements(expr) ne 0) ? 1b : 0b
-    
-end 
+end

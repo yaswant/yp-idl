@@ -1,11 +1,9 @@
-pro wspd2uv, speed, direction, U, V, MISSING=missing
 ;+
 ; :Name:
 ;     wspd2uv
-;     C:\RedSea\yp_idl\lib\wspd2uv.pro
 ;
 ; :Description:
-;     Convert Windspeed and direction to u and v components of wind
+;     Convert Wind-speed and direction to u and v components of wind
 ;     rad = 4.0*atan(1.0)/180.
 ;     u = -spd*sin(rad*dir)
 ;     v = -spd*cos(rad*dir)
@@ -40,6 +38,8 @@ pro wspd2uv, speed, direction, U, V, MISSING=missing
 ; :History:
 ;   Apr 15, 2012 Created. YP
 ;-
+
+pro wspd2uv, speed, direction, U, V, MISSING=missing
 
   syntax = 'wspd2uv, speed, direction [,U] [,V]'
   if N_PARAMS() lt 2 then message, syntax

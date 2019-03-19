@@ -1,7 +1,6 @@
-function isprime, n
 ;+
 ; :NAME:
-;    	isprime
+;       isprime
 ;
 ; :PURPOSE:
 ;       Check if a number (integer) is prime.  Returns:
@@ -35,18 +34,20 @@ function isprime, n
 ; :HISTORY:
 ;  10-Jan-2014 15:01:37 Created. Yaswant Pradhan.
 ;
-;-#
-    
-    i = 2 
+;-
+
+function isprime, n
+
+    i = 2
     if (n lt 1) then return, -1 else nsqrt = sqrt(n)
     case fix(n) of
         1:  return, 0
         else: begin
             ; Checking against the interval [2, n/2 -1] isn't the optimal
-            ; solution; A better approach is to check against [2, sqrt(n)]        
+            ; solution; A better approach is to check against [2, sqrt(n)]
             while (i le nsqrt) do if (fix(n) mod i eq 0) then return, 0 else i++
             return, 1
         end
     endcase
-    
+
 end

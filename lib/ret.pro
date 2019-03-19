@@ -1,16 +1,15 @@
-pro ret, text
 ;+
 ; :NAME:
-;    	ret
+;       ret
 ;
 ; :PURPOSE:
-;       Simple method to retrun to the caller level with a given message.  
+;       Simple method to retrun to the caller level with a given message.
 ;
 ; :SYNTAX:
 ;       ret, ExplainedText
 ;
 ; :PARAMS:
-;    text (in:string) 
+;    text (in:string)
 ;       Message to print before returning to caller level
 ;
 ;
@@ -21,7 +20,7 @@ pro ret, text
 ;       ret, 'There was an error'
 ;
 ; :CATEGORIES:
-;       Errror handling 
+;       Errror handling
 ;
 ; :
 ; - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,6 +29,7 @@ pro ret, text
 ;  Sep 27, 2012 2:07:22 PM Created. Yaswant Pradhan.
 ;
 ;-
+pro ret, text
     on_error, 2   ; Stop in caller
     message, LEVEL=-1, text, /CONTINUE
     retall

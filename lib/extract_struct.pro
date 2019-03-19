@@ -1,7 +1,6 @@
-FUNCTION extract_struct, Struct, Indices, PURGE=purge
 ;+
 ; :NAME:
-;    	extract_struct
+;       extract_struct
 ;
 ; :PURPOSE:
 ;       Extract the subarrays of the members in a structure. It is assumed that
@@ -18,10 +17,10 @@ FUNCTION extract_struct, Struct, Indices, PURGE=purge
 ; :KEYWORDS:
 ;    /PURGE - Set this keyword to clear the original structue from memory.
 ;               Note this is done by simply assigning Struct=0b. So be careful
-;               when using this keyword. 
+;               when using this keyword.
 ;
 ; :REQUIRES:
-;     None  
+;     None
 ;
 ; :EXAMPLES:
 ;
@@ -36,9 +35,11 @@ FUNCTION extract_struct, Struct, Indices, PURGE=purge
 ;
 ;-
 
+FUNCTION extract_struct, Struct, Indices, PURGE=purge
+
 syntax ='Result = extract_struct(Structure, Indices)'
 if (N_PARAMS() lt 2) then message, syntax
-if (SIZE(Struct,/TYPE) ne 8) then message,'Arg1 shoould be a STRUCTURE'  
+if (SIZE(Struct,/TYPE) ne 8) then message,'Arg1 shoould be a STRUCTURE'
 
 Fields  = TAG_NAMES(Struct)
 nElems  = N_ELEMENTS(Indices)
@@ -59,6 +60,6 @@ if KEYWORD_SET(purge) then begin
     message,'INFO: Purging original structure.',/CONTI,/NOPREF
     Struct = 0b
 endif
- 
+
 return, oStruct
 END

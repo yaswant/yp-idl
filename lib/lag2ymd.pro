@@ -1,19 +1,18 @@
-FUNCTION lag2ymd, lag, YEAR=y, MONTH=m, DAY=d, HOUR=hr, MINUTE=mn, SECOND=se
 ;+
 ; NAME:
 ;     lag2ymd
-;     
+;
 ; PURPOSE:
 ;     Returns the lapsed Year, Month, Day, Hour, Minute, Seconds from current
 ;       (or optionally given) date for given lapse time array (in days)
-;       
+;
 ; SYNTAX:
-;     Result = LAG2YMD( Lag [,YEAR=value] [,MONTH=value] [,DAY=value] 
+;     Result = LAG2YMD( Lag [,YEAR=value] [,MONTH=value] [,DAY=value]
 ;                       [,HOUR=value] [,MINUTE=value] [,SECOND=value])
-;                       
+;
 ; ARGUMENTS:
 ;     Lag (IN : Array) - Input lag array (lapse days from current or given YMDhms)
-;     
+;
 ; KEYWORDS:
 ;     YEAR  (IN : Value) Year from which the lad/lapse is considered
 ;     MONTH (IN : Value) Month from which the lad/lapse is considered
@@ -37,10 +36,12 @@ FUNCTION lag2ymd, lag, YEAR=y, MONTH=m, DAY=d, HOUR=hr, MINUTE=mn, SECOND=se
 ;   Last modification:
 ;-
 
+FUNCTION lag2ymd, lag, YEAR=y, MONTH=m, DAY=d, HOUR=hr, MINUTE=mn, SECOND=se
+
     if( n_params() lt 1 ) then message, $
         'Result = LAG2YMD( Lag [,YEAR=value] [,MONTH=value] [,DAY=value] '+$
         '[,HOUR=value] [,MINUTE=value] [,SECOND=value])'
-        
+
     caldat, systime(/julian), mc, dc, yc, hrc, mnc, sec
     year  = is_defined(y) ? y : yc
     mont  = is_defined(m) ? m : mc
@@ -48,10 +49,10 @@ FUNCTION lag2ymd, lag, YEAR=y, MONTH=m, DAY=d, HOUR=hr, MINUTE=mn, SECOND=se
     hour  = is_defined(hr) ? hr : hrc
     minu  = is_defined(mn) ? mn : mnc
     seco  = is_defined(se) ? se : sec
-    
+
     jd    = julday( mont, day, year, hour, minu, seco )
-    caldat, jd-lag, mo, da, yr, hr, mn, se    
-    
-    return, {year:yr, month:mo, day:da, hour:hr, minute:mn, second:se}    
-    
+    caldat, jd-lag, mo, da, yr, hr, mn, se
+
+    return, {year:yr, month:mo, day:da, hour:hr, minute:mn, second:se}
+
 END

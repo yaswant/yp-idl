@@ -1,8 +1,6 @@
-FUNCTION  moments, arr, dim, $
-          MDEV=mdev, SDEV=sdev, _EXTRA=ex
 ;+
 ; :NAME:
-;    	moments
+;     moments
 ;
 ; :PURPOSE:
 ;     The MOMENTS function computes the mean, variance, skewness, and kurtosis
@@ -10,11 +8,11 @@ FUNCTION  moments, arr, dim, $
 ;     an enhancement to IDL's native MOMENT function.
 ;
 ; :SYNTAX:
-;     Result = MOMENTS( Array [,Dimension] [,MDEV=Variable] [,SDEV=Variable] 
+;     Result = MOMENTS( Array [,Dimension] [,MDEV=Variable] [,SDEV=Variable]
 ;                         [,/NaN] [,/DOUBLE] )
 ;
 ;
-;	 :PARAMS:
+;  :PARAMS:
 ;     arr (IN:Array) An n-element, floating-point or double-precision array.
 ;     dim (IN:Value) Dimension over which statistical moments will be computed.
 ;
@@ -31,7 +29,7 @@ FUNCTION  moments, arr, dim, $
 ;               the computations and result depend upon the type of the input
 ;               data (integer and float data return float results,
 ;               while double data returns double results)
-;    
+;
 ;
 ; :REQUIRES:
 ;     average.pro
@@ -78,7 +76,7 @@ FUNCTION  moments, arr, dim, $
 ;
 ;
 ; WARNING:
-;   1.  This function is compatible with native IDL. Met Office users are 
+;   1.  This function is compatible with native IDL. Met Office users are
 ;       advised to SWITCH OFF WAVE mode if running on TIDL;
 ;   2.  Be aware of the memory issues when dealing with large data set.
 ;       MOMENTS function requires 6 times input array size + for array
@@ -100,37 +98,38 @@ FUNCTION  moments, arr, dim, $
 ;  09-Sep-2011 Code clean. YP
 ;
 ;-
+FUNCTION  moments, arr, dim, $
+          MDEV=mdev, SDEV=sdev, _EXTRA=ex
 
-; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-; Parse Inputs
-; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  ; Parse Inputs
   Syntax =' Result = MOMENTS( Array [,Dimension] [,MDEV=Variable]'+$
           ' [,SDEV=Variable] [,/NaN] [,/DOUBLE] )'
-          
+
   if (n_params() lt 1) then message, Syntax
   if (size(arr,/TYPE) gt 5) then message,'Error! Incorrect data type.'
 
-; Check if argument <dim> passed correctly:
+  ; Check if argument <dim> passed correctly:
   dim = (n_elements(dim) gt 0) ? (dim > 0) : 0
 
-; If dimension argument is not present, then return moment of the 
-; whole array using IDL native moment function:    
+  ; If dimension argument is not present, then return moment of the
+  ; whole array using IDL native moment function:
   if (dim eq 0) then begin
     print,' Warning! Dim set to 0.'
     m = moment(arr, MDEV=mdev, SDEV=sdev, _EXTRA=ex)
     return, {mean:m[0], variance:m[1], skewness:m[2], kurtosis:m[3]}
-  endif    
+  endif
 
 
-; Get Input array definition:
+  ; Get Input array definition:
   ndim  = size(arr, /N_DIMENSIONS)
   dims  = size(arr, /DIMENSIONS)
   nel   = size(arr, /N_ELEMENTS)
-  
+
   if (dim gt ndim) then $
   message,'Error! dim should be <= '+strtrim(ndim,2)
 
-; Reform original data array to reduce dimensions:
+  ; Reform original data array to reduce dimensions:
   idx = lindgen(ndim)
   a   = where(idx eq dim-1,na, COMPLEMENT=b, NCOMPLEMENT=nb)
 
@@ -141,48 +140,48 @@ FUNCTION  moments, arr, dim, $
   rtarr = reform(tarr,d1,d2)    ; reform transposed array to 2D
 
 
-; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-; OUTPUTS:
-;   - Get average of array over prescribed dim
-;   - Transform average array to match transformed array
-;   - Calculate Unbiased Sample variance.
-; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-; [1] Average:  
+  ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ; OUTPUTS:
+  ;   - Get average of array over prescribed dim
+  ;   - Transform average array to match transformed array
+  ;   - Calculate Unbiased Sample variance.
+  ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ; [1] Average:
   avg   = average(arr, dim, _EXTRA=ex)
   ravg  = transpose( rebin(avg[*],d2,d1) )
 
-; [2] Unbiased Sample Variance:
+  ; [2] Unbiased Sample Variance:
   vari  = total( (rtarr-ravg)^2., 1, _EXTRA=ex ) / $
                  (d1-1 > 1)
 
   rvari = transpose( rebin(vari[*],d2,d1) )
 
-; [3] Standard Deviation:
+  ; [3] Standard Deviation:
   if arg_present(sdev) then $
   sdev  = reform( sqrt(vari), dims[b] )
 
-; [4] Mean Absolute Deviation:    
+  ; [4] Mean Absolute Deviation:
   if arg_present(mdev) then $
-  mdev  = reform( total(abs(rtarr-ravg), 1, _EXTRA=ex ) / $   
+  mdev  = reform( total(abs(rtarr-ravg), 1, _EXTRA=ex ) / $
                   (d1 > 1), dims[b] )
 
-; [5] Skewness:              
+  ; [5] Skewness:
   skew  = d1 gt 1 ? $
           reform( total( ((rtarr-ravg)/sqrt(rvari))^3., 1, $
                   _EXTRA=ex ) / (d1 > 1), dims[b] )      : $
           reform( make_array(d2, _EXTRA=ex), dims[b] )
-;           reform( replicate(0,d2), dims[b] ) 
-; Note: Using replicate() over make_array() could be ~10% faster
-; but will ignore the output data type if dim = 1.
+  ;           reform( replicate(0,d2), dims[b] )
+  ; Note: Using replicate() over make_array() could be ~10% faster
+  ; but will ignore the output data type if dim = 1.
 
-; [6] Kurtosis:              
+  ; [6] Kurtosis:
   kurto = d1 gt 1 ? $
           reform( (total( ((rtarr-ravg)/sqrt(rvari))^4., 1, $
                   _EXTRA=ex ) / (d1 > 1)) - 3., dims[b] ) : $
           reform( make_array(d2, _EXTRA=ex), dims[b] )
-;           reform( replicate(0,d2), dims[b] )
+          ; reform( replicate(0,d2), dims[b] )
 
-              
+
   return, { mean      : avg,  $
             variance  : reform(vari,dims[b]), $
             skewness  : skew, $
@@ -190,7 +189,6 @@ FUNCTION  moments, arr, dim, $
 
 END
 ;------------------------------------------------------------------------------
-
 
 ; How to call from a procedure?
 ; IDL> test_vari, [1|2|3|4]

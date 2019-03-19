@@ -1,7 +1,6 @@
-function append_struct, tx, ty
 ;+
 ; :NAME:
-;    	append_struct
+;       append_struct
 ;
 ; :PURPOSE:
 ;
@@ -10,7 +9,7 @@ function append_struct, tx, ty
 ;
 ;
 ; :PARAMS:
-;    tx (in: struct) Stucture One 
+;    tx (in: struct) Structure One
 ;    ty (in: struct) Structure Two
 ;
 ;
@@ -29,11 +28,13 @@ function append_struct, tx, ty
 ;  03-Jun-2014 14:00:02 Created. Yaswant Pradhan.
 ;
 ;-
+function append_struct, tx, ty
+
     tags = TAG_NAMES(tx)
     tmp = CREATE_STRUCT(tags[0],[tx.(0),ty.(0)])
-    
+
     for i=1,N_ELEMENTS(tags)-1 do $
         tmp = CREATE_STRUCT(tmp, tags[i], [tx.(i),ty.(i)])
-    
+
     return, tmp
 end

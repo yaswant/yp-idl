@@ -1,7 +1,6 @@
-pro load_rgb, r,g,b
 ;+
 ; :NAME:
-;    	load_rgb
+;       load_rgb
 ;
 ; :PURPOSE:
 ;       Load a new colour table with given R,G,B palette
@@ -10,17 +9,17 @@ pro load_rgb, r,g,b
 ;       load_rgb, R, G, B
 ;
 ; :PARAMS:
-;    r (in:array) Array of Red palette  
+;    r (in:array) Array of Red palette
 ;    g (in:array) array of Green palette
 ;    b (in:array) Aeeay of Blue palette
 ;
 ;
 ; :REQUIRES:
-;    None,.   
+;    None,.
 ;
 ; :EXAMPLES:
 ;   The following is synonymous to loadct, 0 (i.e., B-W Linear)
-;    load_rgb, indgen(256), indegn(256),indgen(256)   
+;    load_rgb, indgen(256), indegn(256),indgen(256)
 ;
 ; :CATEGORIES:
 ;   Plotting, colour management
@@ -31,15 +30,17 @@ pro load_rgb, r,g,b
 ;  12-Oct-2011 09:58:34 Created. Yaswant Pradhan.
 ;
 ;-
-  
-    if (N_PARAMS() lt 3) then message,"Syntax: load_rgb, R, G, B" 
+
+pro load_rgb, r,g,b
+
+    if (N_PARAMS() lt 3) then message,"Syntax: load_rgb, R, G, B"
     nlr = N_ELEMENTS(r)
     nlg = N_ELEMENTS(g)
     nlb = N_ELEMENTS(b)
-  
+
     rr = (nlr lt 256) ? [r, BYTSCL(INDGEN(256-nlr))] : r
     gg = (nlg lt 256) ? [g, BYTSCL(INDGEN(256-nlg))] : g
     bb = (nlb lt 256) ? [b, BYTSCL(INDGEN(256-nlb))] : b
     tvlct, rr,gg,bb
-  
+
 end

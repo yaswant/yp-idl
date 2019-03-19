@@ -1,13 +1,12 @@
-pro draw_circle, x0, y0, radius, NPTS=npts, _REF_EXTRA=rex
 ;+
 ; :NAME:
-;    	draw_circle
+;       draw_circle
 ;
 ; :PURPOSE:
 ;       Draw a circle.
 ;
 ; :SYNTAX:
-;       draw_circle, x0, y0, radius [,NPTS=value] 
+;       draw_circle, x0, y0, radius [,NPTS=value]
 ;           [,CLIP=[X0, Y0, X1, Y1]] [,COLOR=value] [,/DATA|,/DEVICE|,/NORMAL]
 ;           [,LINESTYLE={0 | 1 | 2 | 3 | 4 | 5}] [,/NOCLIP] [,/T3D]
 ;           [,THICK=value] [,Z=value]
@@ -22,7 +21,7 @@ pro draw_circle, x0, y0, radius, NPTS=npts, _REF_EXTRA=rex
 ;
 ; :KEYWORDS:
 ;    NPTS (in:value) Number of points (default = 10000)
-;    
+;
 ; :INHERITED KEYWORDS:
 ;   Common Graphics Keywords:
 ;       CLIP=[X0, Y0, X1, Y1]
@@ -33,12 +32,12 @@ pro draw_circle, x0, y0, radius, NPTS=npts, _REF_EXTRA=rex
 ;       /T3D
 ;       THICK=value
 ;       Z=value
-;              
+;
 ;   PLOTS specific:
 ;       PSYM=integer{0 to 10}
 ;       SYMSIZE=value
-;   
-;   POLYFILL specific:       
+;
+;   POLYFILL specific:
 ;       /LINE_FILL
 ;       PATTERN=array
 ;       ORIENTATION=ccw_degrees_from_horiz
@@ -59,9 +58,11 @@ pro draw_circle, x0, y0, radius, NPTS=npts, _REF_EXTRA=rex
 ;
 ;-
 
+pro draw_circle, x0, y0, radius, NPTS=npts, _REF_EXTRA=rex
+
     ; Set default number of points to draw the circle
     npts = KEYWORD_SET(npts) ? npts : 0
-    
+
     case npts of
         3   : message,/CON,'Insufficient NPTS; Drawing a triangle instead.'
         4   : message,/CON,'Insufficient NPTS; Drawing a rectangle instead.'
@@ -73,21 +74,21 @@ pro draw_circle, x0, y0, radius, NPTS=npts, _REF_EXTRA=rex
         10  : message,/CON,'Insufficient NPTS; Drawing a decagon instead.'
         else: npts = 10000L
     endcase
-    
+
     theta = INDGEN(npts)*2*!pi / npts
     xx = radius * SIN(theta) + x0
     yy = radius * COS(theta) + y0
     xx = [xx, xx[0]]
     yy = [yy, yy[0]]
-    
-    ; Parse fill using inherited keyword 
+
+    ; Parse fill using inherited keyword
     fill = N_ELEMENTS(rex) gt 0 ? FIX(TOTAL(STRMATCH(rex,'FILL',/FOLD))) : 0
-    
-    case fill of    
+
+    case fill of
         1   : polyfill, xx, yy, _EXTRA=rex
-        
-        else: plots, xx, yy, _EXTRA=rex        
-    endcase    
+
+        else: plots, xx, yy, _EXTRA=rex
+    endcase
     return
-    
+
 end

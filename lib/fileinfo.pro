@@ -1,84 +1,84 @@
-FUNCTION FILEINFO, FILENAME
+;+
+; NAME:
+;    FILEINFO
+;
+; PURPOSE:
+;    Return information about a file.
+;
+; CATEGORY:
+;    File utilities.
+;
+; CALLING SEQUENCE:
+;    RESULT = FILEINFO(FILE)
+;
+; INPUTS:
+;    FILE    Name of file
+;
+; OPTIONAL INPUTS:
+;    None.
+;
+; KEYWORD PARAMETERS:
+;    None.
+;
+; OUTPUTS:
+;    An anonymous structure containing information about the file.
+;    The fields in the structure are as follows:
+;    NAME     String containing the name of the file
+;    EXIST    1 if file exists, 0 otherwise.
+;    READ     1 if file can be read, 0 otherwise.
+;    WRITE    1 if file can be written, 0 otherwise.
+;    HDF      1 if file is HDF format, 0 otherwise
+;             (0 if HDF API is not available).
+;    NETCDF   1 if file is netCDF format, 0 otherwise
+;             (0 if netCDF API is not available).
+;    SIZE     File size in bytes
+;             (-1 if file does not exist, or if file cannot be read).
+;
+; OPTIONAL OUTPUTS:
+;    None
+;
+; COMMON BLOCKS:
+;    None
+;
+; SIDE EFFECTS:
+;    None.
+;
+; RESTRICTIONS:
+;    Requires IDL 5.0 or higher (square bracket array syntax).
+;
+; EXAMPLE:
+;
+;;- Check an existing file
+;file = filepath('hurric.dat', subdir='examples/data')
+;help, fileinfo(file), /structure
+;
+;;- Check a new file
+;file = 'zztest.dat'
+;help, fileinfo(file), /structure
+;
+; MODIFICATION HISTORY:
+; Liam.Gumley@ssec.wisc.edu
+; http://cimss.ssec.wisc.edu/~gumley
+; $Id: fileinfo.pro,v 1.1 2003/06/30 20:27:21 gumley Exp $
+;
+; Copyright (C) 1999, 2000 Liam E. Gumley
+;
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+;-
 
-   ;+
-   ; NAME:
-   ;    FILEINFO
-   ;
-   ; PURPOSE:
-   ;    Return information about a file.
-   ;
-   ; CATEGORY:
-   ;    File utilities.
-   ;
-   ; CALLING SEQUENCE:
-   ;    RESULT = FILEINFO(FILE)
-   ;
-   ; INPUTS:
-   ;    FILE    Name of file
-   ;
-   ; OPTIONAL INPUTS:
-   ;    None.
-   ;
-   ; KEYWORD PARAMETERS:
-   ;    None.
-   ;
-   ; OUTPUTS:
-   ;    An anonymous structure containing information about the file.
-   ;    The fields in the structure are as follows:
-   ;    NAME     String containing the name of the file
-   ;    EXIST    1 if file exists, 0 otherwise.
-   ;    READ     1 if file can be read, 0 otherwise.
-   ;    WRITE    1 if file can be written, 0 otherwise.
-   ;    HDF      1 if file is HDF format, 0 otherwise
-   ;             (0 if HDF API is not available).
-   ;    NETCDF   1 if file is netCDF format, 0 otherwise
-   ;             (0 if netCDF API is not available).
-   ;    SIZE     File size in bytes
-   ;             (-1 if file does not exist, or if file cannot be read).
-   ;
-   ; OPTIONAL OUTPUTS:
-   ;    None
-   ;
-   ; COMMON BLOCKS:
-   ;    None
-   ;
-   ; SIDE EFFECTS:
-   ;    None.
-   ;
-   ; RESTRICTIONS:
-   ;    Requires IDL 5.0 or higher (square bracket array syntax).
-   ;
-   ; EXAMPLE:
-   ;
-   ;;- Check an existing file
-   ;file = filepath('hurric.dat', subdir='examples/data')
-   ;help, fileinfo(file), /structure
-   ;
-   ;;- Check a new file
-   ;file = 'zztest.dat'
-   ;help, fileinfo(file), /structure
-   ;
-   ; MODIFICATION HISTORY:
-   ; Liam.Gumley@ssec.wisc.edu
-   ; http://cimss.ssec.wisc.edu/~gumley
-   ; $Id: fileinfo.pro,v 1.1 2003/06/30 20:27:21 gumley Exp $
-   ;
-   ; Copyright (C) 1999, 2000 Liam E. Gumley
-   ;
-   ; This program is free software; you can redistribute it and/or
-   ; modify it under the terms of the GNU General Public License
-   ; as published by the Free Software Foundation; either version 2
-   ; of the License, or (at your option) any later version.
-   ;
-   ; This program is distributed in the hope that it will be useful,
-   ; but WITHOUT ANY WARRANTY; without even the implied warranty of
-   ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   ; GNU General Public License for more details.
-   ;
-   ; You should have received a copy of the GNU General Public License
-   ; along with this program; if not, write to the Free Software
-   ; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-   ;-
+FUNCTION FILEINFO, FILENAME
 
    rcs_id = '$Id: fileinfo.pro,v 1.1 2003/06/30 20:27:21 gumley Exp $'
 

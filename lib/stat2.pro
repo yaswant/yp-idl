@@ -1,53 +1,52 @@
+;+
+; :NAME:
+;       stat2
+;
+; :PURPOSE:
+;
+;
+; :SYNTAX:
+;       stat2, X, Y, out [,FILTER=value] [,/LOG] [,/SILENT]
+;
+; :PARAMS:
+;    reference (in:array)
+;    model (in:array)
+;    outs (out:struct)
+;
+;
+; :KEYWORDS:
+;    FILTER (in:value)
+;    /LOG Log transform data
+;    /SILENT Quiet mode
+;
+; :REQUIRES:
+;   is_defined.pro
+;   rmafit.pro
+;   helps.pro
+;
+; :EXAMPLES:
+;
+;
+; :CATEGORIES:
+;
+; :NOTE:
+; To get Fractional Gross Error use the following formula
+;   FGE = URMSP / 100.
+;
+; :
+; - - - - - - - - - - - - - - - - - - - - - - - - - -
+; :COPYRIGHT: (c) Crown Copyright Met Office
+; :HISTORY:
+;  03-Dec-2012 18:07:03 Created. Yaswant Pradhan.
+;
+;-
 pro stat2, reference, model, outs, FILTER=filter, LOG=log, SILENT=silent
-    ;+
-    ; :NAME:
-    ;    	stat2
-    ;
-    ; :PURPOSE:
-    ;
-    ;
-    ; :SYNTAX:
-    ;       stat2, X, Y, out [,FILTER=value] [,/LOG] [,/SILENT]
-    ;
-    ; :PARAMS:
-    ;    reference (in:array)
-    ;    model (in:array)
-    ;    outs (out:struct)
-    ;
-    ;
-    ; :KEYWORDS:
-    ;    FILTER (in:value)
-    ;    /LOG Log transfor data
-    ;    /SILENT Quiet mode
-    ;
-    ; :REQUIRES:
-    ;   is_defined.pro
-    ;   rmafit.pro
-    ;   helps.pro
-    ;
-    ; :EXAMPLES:
-    ;
-    ;
-    ; :CATEGORIES:
-    ;
-    ; :NOTE:
-    ; To get Fractional Gross Error use the following formula
-    ;   FGE = URMSP / 100.
-    ;
-    ; :
-    ; - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ; :COPYRIGHT: (c) Crown Copyright Met Office
-    ; :HISTORY:
-    ;  03-Dec-2012 18:07:03 Created. Yaswant Pradhan.
-    ;
-    ;-
-
 
     if (N_PARAMS() lt 2) then begin
         MESSAGE,'stat2, x, y [,/LOG] [,FILTER=value]',/CONTINUE
         return
     endif
-    
+
     _nan = !values.f_nan
     if is_defined(filter) then begin
         w = WHERE(reference ne filter and model ne filter, nw)
@@ -58,14 +57,14 @@ pro stat2, reference, model, outs, FILTER=filter, LOG=log, SILENT=silent
         y = KEYWORD_SET(log) ? ALOG10(model) : model
     endelse
     ny = N_ELEMENTS(y)
-    
+
     outs = {$
         rmse: _nan,$    ; Root Mean Square Error (RMSE)
         urmse: _nan,$   ; Unbiased RMSE (usually indicates model precision)
         bias: _nan,$    ; Bias (indicates model accuracy)
         rmsp: _nan,$    ; Relative percentage RMSE
         urmsp: _nan,$   ; Unbiased relative percentage RMSE (/100 = Fractional
-        ; Gross Error)
+                        ; Gross Error)
         ;        fge: _nan,$     ; Fractional Gross Error (FGE) = urmsp/100.
         amep: _nan,$    ; Relative percent Absolute Mean Error, also known as
         ; Normalised Mean Error (NME)
@@ -93,15 +92,15 @@ pro stat2, reference, model, outs, FILTER=filter, LOG=log, SILENT=silent
         skewy: _nan, $
         kurtx: _nan, $
         kurty: _nan $
-        }
-        
+    }
+
     mom_x = MOMENT( x, MEAN=av_x, SDEV=sd_x, MDEV=mad_x, $
         SKEWNESS=skew_x, KURTOSIS=kurt_x, /NAN )
     mom_y = MOMENT( y, MEAN=av_y, SDEV=sd_y, MDEV=mad_y, $
         SKEWNESS=skew_y, KURTOSIS=kurt_y, /NAN )
     ; av_x = MEAN(x, /NAN)
     ; av_y = MEAN(y, /NAN)
-        
+
     fits = rmafit(x,y, /SILENT)  ; linear fit parametrs using type-2 regression
     outs.rmse = SQRT(MEAN((y-x)^2, /NAN))
     outs.urmse = SQRT(MEAN( ((y-av_y) - (x-av_x))^2 ))
@@ -122,7 +121,7 @@ pro stat2, reference, model, outs, FILTER=filter, LOG=log, SILENT=silent
     outs.slope = fits[1]
     outs.offset = fits[0]
     ;    outs.fge = 2 * MEAN( ABS((y-x)/(y+x)),/NAN )
-    
+
     ;; Individual Variable Stats:
     outs.minx = MIN(x, /NAN)
     outs.miny = MIN(y, /NAN)
@@ -140,6 +139,6 @@ pro stat2, reference, model, outs, FILTER=filter, LOG=log, SILENT=silent
     outs.skewy = skew_y
     outs.kurtx = kurt_x
     outs.kurty = kurt_y
-    
+
     if ~KEYWORD_SET(silent) then HELP,outs,/STRUCT
 end

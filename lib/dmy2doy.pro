@@ -1,4 +1,3 @@
-function dmy2doy, Day, Month, Year
 ;+
 ; :NAME:
 ;     dmy2doy
@@ -15,7 +14,7 @@ function dmy2doy, Day, Month, Year
 ;    Year (IN:Value) Valid Year number
 ;
 ; :REQUIRES:
-;   IDL(v6.4 and above) Advanced Math and Stats license 
+;   IDL(v6.4 and above) Advanced Math and Stats license
 ;
 ; :EXAMPLES:
 ;   IDL> print,dmy2doy(23,6,1987)
@@ -30,6 +29,7 @@ function dmy2doy, Day, Month, Year
 ;  16-Jun-2011 11:20:33 Created. Yaswant Pradhan.
 ;
 ;-
+function dmy2doy, Day, Month, Year
 
   syntax = 'Result = dmy2doy( Day, Month, Year )'
 
@@ -40,6 +40,6 @@ function dmy2doy, Day, Month, Year
   endif
 
   return, FIX(1 + IMSL_DATETODAYS(Day,Month,Year) - IMSL_DATETODAYS(1,1,Year))
-  
+
 
 end

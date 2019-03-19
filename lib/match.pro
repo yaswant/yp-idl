@@ -1,5 +1,4 @@
-pro match, a, b, suba, subb, COUNT = count, SORT = sort
-;++
+;+
 ; NAME:
 ;       MATCH
 ; PURPOSE:
@@ -66,94 +65,92 @@ pro match, a, b, suba, subb, COUNT = count, SORT = sort
 ;       Use size(/type)                  W. Landsman         December 2002
 ;       Work for scalar integer input    W. Landsman         June 2003
 ;-
-;-------------------------------------------------------------------------
- On_error,2
+pro match, a, b, suba, subb, COUNT = count, SORT = sort
 
- if N_params() LT 3 then begin
-     print,'Syntax - match, a, b, suba, subb, [ COUNT = ]'
-     print,'    a,b -- input vectors for which to match elements'
-     print,'    suba,subb -- output subscript vectors of matched elements'
-     return
- endif
+  On_error,2
 
- da = size(a,/type) & db =size(b,/type)
- if keyword_set(sort) then hist = 0b else $
- hist = (( da LE 3 ) or (da GE 12)) and  ((db LE 3) or (db GE 12 ))
+  if N_params() LT 3 then begin
+    print,'Syntax - match, a, b, suba, subb, [ COUNT = ]'
+    print,'    a,b -- input vectors for which to match elements'
+    print,'    suba,subb -- output subscript vectors of matched elements'
+    return
+  endif
 
- if not hist then begin           ;Non-integer calculation
+  da = size(a,/type) & db =size(b,/type)
+  if keyword_set(sort) then hist = 0b else $
+  hist = (( da LE 3 ) or (da GE 12)) and  ((db LE 3) or (db GE 12 ))
 
- na = N_elements(a)              ;number of elements in a
- nb = N_elements(b)             ;number of elements in b
+  if not hist then begin
+    ; Non-integer calculation
+    na = N_elements(a)             ; number of elements in a
+    nb = N_elements(b)             ; number of elements in b
 
-; Check for a single element array
+    ; Check for a single element array
+    if (na EQ 1) or (nb EQ 1) then begin
+      if (nb GT 1) then begin
+        subb = where(b EQ a[0], nw)
+        if (nw GT 0) then suba = replicate(0,nw) else suba = [-1]
+      endif else begin
+        suba = where(a EQ b[0], nw)
+        if (nw GT 0) then subb = replicate(0,nw) else subb = [-1]
+      endelse
 
- if (na EQ 1) or (nb EQ 1) then begin
-        if (nb GT 1) then begin
-                subb = where(b EQ a[0], nw)
-                if (nw GT 0) then suba = replicate(0,nw) else suba = [-1]
-        endif else begin
-                suba = where(a EQ b[0], nw)
-                if (nw GT 0) then subb = replicate(0,nw) else subb = [-1]
-        endelse
-        count = nw
-        return
- endif
+      count = nw
+      return
+    endif
 
- c = [ a, b ]                   ;combined list of a and b
- ind = [ lindgen(na), lindgen(nb) ]       ;combined list of indices
- vec = [ bytarr(na), replicate(1b,nb) ]  ;flag of which vector in  combined
-                                         ;list   0 - a   1 - b
+    c = [ a, b ]                              ; combined list of a and b
+    ind = [ lindgen(na), lindgen(nb) ]        ; combined list of indices
+    vec = [ bytarr(na), replicate(1b,nb) ]    ; flag of which vector in  combined
+                                              ; list   0 - a   1 - b
 
-; sort combined list
+    ; sort combined list
+    sub = sort(c)
+    c = c[sub]
+    ind = ind[sub]
+    vec = vec[sub]
 
- sub = sort(c)
- c = c[sub]
- ind = ind[sub]
- vec = vec[sub]
+    ; find duplicates in sorted combined list
+    n = na + nb                            ;total elements in c
+    firstdup = where( (c EQ shift(c,-1)) and (vec NE shift(vec,-1)), Count )
 
-; find duplicates in sorted combined list
+    if Count EQ 0 then begin               ;any found?
+      suba = lonarr(1)-1
+      subb = lonarr(1)-1
+      return
+    end
 
- n = na + nb                            ;total elements in c
- firstdup = where( (c EQ shift(c,-1)) and (vec NE shift(vec,-1)), Count )
+    dup = lonarr( Count*2 )                     ;both duplicate values
+    even = lindgen( N_elements(firstdup))*2     ;Changed to LINDGEN 6-Sep-1991
+    dup[even] = firstdup
+    dup[even+1] = firstdup+1
+    ind = ind[dup]                          ;indices of duplicates
+    vec = vec[dup]                          ;vector id of duplicates
+    suba = ind[ where( vec EQ 0)  ]         ;a subscripts
+    subb = ind[ where( vec) ]               ;b subscripts
 
- if Count EQ 0 then begin               ;any found?
-        suba = lonarr(1)-1
-        subb = lonarr(1)-1
-        return
- end
+  endif else begin             ;Integer calculation using histogram.
 
- dup = lonarr( Count*2 )                     ;both duplicate values
- even = lindgen( N_elements(firstdup))*2     ;Changed to LINDGEN 6-Sep-1991
- dup[even] = firstdup
- dup[even+1] = firstdup+1
- ind = ind[dup]                         ;indices of duplicates
- vec = vec[dup]                         ;vector id of duplicates
- suba = ind[ where( vec EQ 0)  ]       ;a subscripts
- subb = ind[ where( vec) ]             ;b subscripts
+    minab = min(a, MAX=maxa) > min(b, MAX=maxb) ;Only need intersection of ranges
+    maxab = maxa < maxb
 
- endif else begin             ;Integer calculation using histogram.
+    ;If either set is empty, or their ranges don't intersect:
+    ;  result = NULL (which is denoted by integer = -1)
+    !ERR = -1
+    suba = -1
+    subb = -1
+    COUNT = 0L
+    if (maxab lt minab) or (maxab lt 0) then return
 
- minab = min(a, MAX=maxa) > min(b, MAX=maxb) ;Only need intersection of ranges
- maxab = maxa < maxb
+    ha = histogram([a], MIN=minab, MAX=maxab, reverse_indices=reva)
+    hb = histogram([b], MIN=minab, MAX=maxab, reverse_indices=revb)
 
-;If either set is empty, or their ranges don't intersect:
-;  result = NULL (which is denoted by integer = -1)
-  !ERR = -1
-  suba = -1
-  subb = -1
-  COUNT = 0L
- if (maxab lt minab) or (maxab lt 0) then return
+    r = where((ha ne 0) and (hb ne 0), count)
+    if count gt 0 then begin
+      suba = reva[reva[r]]
+      subb = revb[revb[r]]
+    endif
+  endelse
+  return
 
- ha = histogram([a], MIN=minab, MAX=maxab, reverse_indices=reva)
- hb = histogram([b], MIN=minab, MAX=maxab, reverse_indices=revb)
-
- r = where((ha ne 0) and (hb ne 0), count)
- if count gt 0 then begin
-  suba = reva[reva[r]]
-  subb = revb[revb[r]]
- endif
- endelse
-
- return
-
- end
+end

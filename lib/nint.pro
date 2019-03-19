@@ -1,5 +1,3 @@
-;Nearest Integer Function
-FUNCTION nint, x, LONG=long
 ;+
 ;NAME:
 ;   NINT
@@ -45,15 +43,18 @@ FUNCTION nint, x, LONG=long
 ;       Use size(/TNAME) instead of DATATYPE()      October 2001
 ;-
 
+FUNCTION nint, x, LONG=long
+
+
     xmax = MAX(x, MIN=xmin)
     xmax = ABS(xmax) > ABS(xmin)
-    
+
     if (xmax gt 32767) or KEYWORD_SET(long) then begin
         b = (SIZE(x,/TNAME) eq 'STRING') ? ROUND(FLOAT(x)) : ROUND(x)
     end else begin
         b = (SIZE(x,/TNAME) eq 'STRING') ? FIX(ROUND(FLOAT(x))) : FIX(ROUND(x))
     endelse
-    
+
     return, b
-    
+
 END

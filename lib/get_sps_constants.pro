@@ -1,5 +1,3 @@
-FUNCTION get_sps_constants, name, ALL=all
-
 ;+
 ; SYNTAX:
 ;   Result = get_sps_constants( [name] [,/all] )
@@ -9,15 +7,18 @@ FUNCTION get_sps_constants, name, ALL=all
 ;   result = get_sps_constants('PLANCK_C1')
 ;   print, result
 ;   1.1910659e-05
-;-	
+;-
+
+FUNCTION get_sps_constants, name, ALL=all
+
 	if( n_params() lt 1 or keyword_set(all) )then $
 		return, sps_constants() $
-	else begin	
+	else begin
 		for i=0,n_tags(sps_constants())-1 do begin
 			if ( (tag_names(sps_constants()))[i] eq strupcase(name) ) then begin
 			;print, (sps_constants()).(i)
 			return, (sps_constants()).(i)
 			endif
-		endfor	
+		endfor
 	endelse
 END

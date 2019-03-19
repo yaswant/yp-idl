@@ -1,7 +1,6 @@
-FUNCTION file_suffix, Path, PATTERN=patt, PREFIX=prefix, KEEP_PATH=keep_path
 ;+
 ; :NAME:
-;    	file_suffix
+;       file_suffix
 ;
 ; :PURPOSE:
 ;     The FILE_SUFFIX function returns the file suffix of a file path.
@@ -13,7 +12,7 @@ FUNCTION file_suffix, Path, PATTERN=patt, PREFIX=prefix, KEEP_PATH=keep_path
 ;     Result = FILE_SUFIX( Path [,PATTERN=String] [,PREFIX=Variable]
 ;               [,/KEEP_PATH] )
 ;
-;	 :PARAMS:
+;    :PARAMS:
 ;    Path (in:string|strarr) Path containing the suffix for each element of
 ;             the Path argument
 ;
@@ -50,41 +49,43 @@ FUNCTION file_suffix, Path, PATTERN=patt, PREFIX=prefix, KEEP_PATH=keep_path
 ;
 ;-
 
+FUNCTION file_suffix, Path, PATTERN=patt, PREFIX=prefix, KEEP_PATH=keep_path
+
     ; Parse inputs:
     syntax =' Result = FILE_SUFIX(Path [,PATTERN=String] [,PREFIX=Variable]'+$
         ' [,/KEEP_PATH] )'
-        
+
     if (N_PARAMS() lt 1) then MESSAGE,'Syntax: '+syntax
-    
+
     patt = KEYWORD_SET(patt) ? STRTRIM(patt,2) : '.'
     n = N_ELEMENTS(Path)
-    
+
     ; Construct a diagonal square matrix to handle strmid out for arrays:
     diag = WHERE(DIAG_MATRIX(REPLICATE(1, n)))
-    
+
     ; Set the full path in file prefix if keep_path keyword is set:
     nPath = KEYWORD_SET(keep_path) ? Path : FILE_BASENAME(Path)
-    
-    
+
+
     ; Get prefix:
     prefix  = (n eq 1) ? $
         ((STRMID(nPath,0,STRPOS(nPath,patt,/REVERSE_SEARCH)))[diag])[0] : $
         (STRMID(nPath,0,STRPOS(nPath,patt,/REVERSE_SEARCH)))[diag]
-        
-        
+
+
     ; Get the suffix matrix [n,n], where the diagonal position holds
     ; suffixes of each input path string and return:
     suffix = STRMID(nPath,STRPOS(nPath,patt,/REVERSE_SEARCH)+1)
-    
+
     ; Check if the extension pattern exists in the Path:
     noMatch = WHERE(STRPOS(nPath,patt) lt 0, n_noMatch)
-    
+
     if (n_noMatch gt 0) then begin
         prefix[noMatch]=nPath[noMatch]
         suffix[diag[noMatch]] = ''
     endif
-    
+
     ; Return file suffix:
     RETURN, n eq 1 ? (suffix[diag])[0] : suffix[diag]
-    
+
 END

@@ -1,10 +1,9 @@
-function mark_dir, path
 ;+
 ; :NAME:
 ;     mark_dir
 ;
 ; :PURPOSE:
-;     MARK_DIR function adds a directory mark (or path separator mark) to 
+;     MARK_DIR function adds a directory mark (or path separator mark) to
 ;     input string.
 ;
 ; :SYNTAX:
@@ -13,15 +12,15 @@ function mark_dir, path
 ;  :PARAMS:
 ;    path (IN:String) A scalar string or string array indicating input path name(s).
 ;                     (def: current working directory)
-;   
+;
 ; :REQUIRES:
 ;     strrev.pro
 ;
 ; :EXAMPLES:
 ;   IDL> print,mark_dir()
 ;   Warning! No Input argument. Retruning Current Working Directory.
-;   /net/home/h05/fra6/                    
-;   
+;   /net/home/h05/fra6/
+;
 ;   IDL> print,mark_dir('/data/local')
 ;   /data/local/
 ;
@@ -37,33 +36,36 @@ function mark_dir, path
 ;  23-Aug-2010 11:53:21 Created. Yaswant Pradhan.
 ;  May 2011: Added null string error check. YP.
 ;-
+
+function mark_dir, path
+
   compile_opt idl2
   cd, CURRENT=cwd
-      
 
-; Parse input argument
-  if (N_PARAMS() lt 1) then begin  
+
+  ; Parse input argument
+  if (N_PARAMS() lt 1) then begin
     print,'** Warning! No Input argument. Retruning Current Working Directory **'
     path = cwd
   endif
 
-; Check presence of null string ('') in the input  
+  ; Check presence of null string ('') in the input
   null1 = (PRODUCT(STRLEN(path)) eq 0)
   if null1 then begin
-    npath = path[where(~STRCMP(path,''))]    
+    npath = path[where(~STRCMP(path,''))]
     if (PRODUCT(STRLEN(npath)) eq 1) $
-    then message,' Can not process null string.'        
+    then message,' Can not process null string.'
   endif
-       
+
   out = path
 
-; Check directory marked strings       
+  ; Check directory marked strings
   dmark   = PATH_SEP()
-  lastc   = STRMID(strrev(path),0,1)  
+  lastc   = STRMID(strrev(path),0,1)
   marked  = WHERE(STRCMP(lastc,dmark), COMPLEMENT=mark, NCOMPLEMENT=n_mark)
-    
+
   if (n_mark gt 0) then out[mark] = path[mark]+dmark
-  
+
   return, out
 
 end
