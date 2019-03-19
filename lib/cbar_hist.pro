@@ -3,10 +3,10 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
                YTFMT=ytfmt, YCHARSIZE=ycsz, HIST_XY=hist_xy, NOBAR=nobar, $
                CBHEIGHT=cbh, PLOT0LINE=plot0line, GET_HRANGE=get_hrange, $
                BOX_AXES=box_axes, ADD_GAUSSIAN=add_gaussian, $
-               YTICKS=yticks, ADD_CUMULATIVE=add_cumulative, $
+               ADD_CUMULATIVE=add_cumulative, $
                FILL=fill, BRAND=brand, FCOLOR=fclr, LCOLOR=lclr, $
-               RELATIVE=relative, XTITLE=xtit, YTITLE=ytit, $
-               XTICKS=xticks, XTICKNAME=xtickname, _EXTRA=extra
+               DOTPLOT=dotplot, OVERPLOT=overplot, $
+               RELATIVE=relative, XTITLE=xtit, YTITLE=ytit, _EXTRA=extra
 ;+
 ; NAME:       CBAR_HIST 
 ;
@@ -19,8 +19,8 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
 ;             Position (IN:array) - bottom left and top right potisions [x0,y0,x1,y1]
 ;                                   in normal coordinate
 ;             PTITLE (IN:String) - Plot title                      
-;             Binsize (IN:array) - Bin size for histogram; default is 1
-;             Color (IN:value) - annotaion colour
+;             Binsize (IN:Value) - Bin size for histogram; default is 1
+;             Color (IN:Value) - annotaion colour
 ;             Hrange (IN:array) - MinMax range of histogram frequency
 ;             THICK (IN:Value) - Histogram line thickness
 ;             YTfmt (IN:string) - Ytick format; default is '(e7.0)'
@@ -37,6 +37,7 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
 ;             /FILL - Fill histogram bars
 ;             FCOLOR (IN:Value) Color Index for Filled polygons
 ;             LCOLOR (IN:Value) Color Index for polygon outline
+;             /DOTPLOT - Plot histogram as dots instead of bars
 ;             /RELATIVE - Display relative units for frequency
 ;             _Extra - Inherits plot and colorbar proerties
 ;
@@ -87,9 +88,7 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
   ptit      = keyword_set(ptitle) ? ptitle : ' '
   cumul     = keyword_set(add_cumulative)
   thick     = is_defined(thick) ? thick : 1
-  yt        = KEYWORD_SET(yticks) ? yticks : 3
-  xt        = KEYWORD_SET(xticks) ? xticks : 0
-  xtn       = is_defined(xtickname) ? xtickname : ' '
+  symstyle  = KEYWORD_SET(dotplot ) ? 3 : 10
   tvlct,    r,g,b,/GET ; preloaded RGB table
   
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -104,6 +103,16 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
   h   = keyword_set(relative) ? rh * 100. : h
   
 
+  if KEYWORD_SET(overplot) then begin
+;     !X.RANGE = !X.CRANGE   
+;     !Y.RANGE = !Y.CRANGE
+     !X.STYLE = 5
+     !Y.STYLE = 5
+  endif else begin
+    !X.STYLE = 1
+    !Y.STYLE = 1
+  endelse 
+  
 ; Add histogram plot and get tick intervals for colorbar  
   hrange  = keyword_set(hrange) ? hrange : [min(h),max(h)]+[0,1]    
   ytfmt   = keyword_set(ytfmt) ? ytfmt : $
@@ -146,9 +155,9 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
     plot, x, h, POSITION=hgpos,/NODATA, $
         XTICK_GET=xt, XSTYLE=xst, $;XSTYLE=(nob ? (box ? 1 : 9) : (box ? 1 : 5) ), $
         XRANGE=range, YRANGE=hrange, YSTYLE=yst, $ ;YSTYLE=(box ? (cumul ? 9 : 1) : 9), $
-        /NOERASE, PSYM=10, /NORMAL, XTICKS=(nob ? xt : (box ? 1 : 0)), $
-        XTICKNAME=(nob ? xtn : (box ? [' ',' '] : 0)), $
-        YTICKLEN=.01, YMINOR=1, COLOR=color, YTICKS=(uni ? 0 : yt), $
+        /NOERASE, PSYM=symstyle, /NORMAL, XTICKS=(nob ? 0 : (box ? 1 : 0)), $
+        XTICKNAME=(nob ? '' : (box ? [' ',' '] : 0)), $
+        YTICKLEN=.01, YMINOR=1, COLOR=color, YTICKS=(uni ? 0 : 3), $
         YTICKFORMAT=ytfmt, CHARSIZE=ycsz, THICK=thick, $
         XTITLE=(nob ? xtit : ''), YTITLE=ytit, TITLE=ptit
         
@@ -165,9 +174,9 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
     plot, x, h, POSITION=hgpos, $
         XTICK_GET=xt, XSTYLE=xst, $;XSTYLE=(nob ? (box ? 1 : 9) : (box ? 1 : 5) ), $
         XRANGE=range, YRANGE=hrange, YSTYLE=yst, $;YSTYLE=(box ? (cumul ? 9 : 1) : 9), $
-        /NOERASE, PSYM=10, /NORMAL, XTICKS=(nob ? 0 : (box ? 1 : 0)), $
-        XTICKNAME=(nob ? ' ' : (box ? [' ',' '] : 0)),$
-        YTICKLEN=.01, YMINOR=1, COLOR=color, YTICKS=(uni ? 0 : yt), $
+        /NOERASE, PSYM=symstyle, /NORMAL, XTICKS=(nob ? 0 : (box ? 1 : 0)), $
+        XTICKNAME=(nob ? '' : (box ? [' ',' '] : 0)),$
+        YTICKLEN=.01, YMINOR=1, COLOR=color, YTICKS=(uni ? 0 : 3), $
         YTICKFORMAT=ytfmt, CHARSIZE=ycsz, THICK=thick, $
         XTITLE=(nob ? xtit : ''), YTITLE=ytit, TITLE=ptit
   endelse
@@ -201,9 +210,11 @@ pro cbar_hist, DATA=data, RANGE=range, POSITION=position, PTITLE=ptitle, $
   
 ; Add a colorbar 
   if ~nob then begin
-    colorbar, POSITION=cbpos, RANGE=range, DIVISIONS=divs, COLOR=color, _EXTRA=extra
-    XYOUTS, mean([cbpos[0],cbpos[2]]), (cbpos[1]+cbpos[3])/2.01,(keyword_set(xtit) ? xtit : ''), $
-            ALIGN=0.5,/NORMAL,CHARSIZE=0.8
+    colorbar, POSITION=cbpos, RANGE=range, DIVISIONS=divs, $
+        COLOR=color, _EXTRA=extra
+    XYOUTS, mean([cbpos[0],cbpos[2]]), $
+        (cbpos[1]+cbpos[3])/2.01,(keyword_set(xtit) ? xtit : ''), $
+        ALIGN=0.5,/NORMAL,CHARSIZE=0.8
   endif  
   
   

@@ -42,6 +42,7 @@ function format_values, Array, DecimalPlace, AXISV=axisv
 ; :HISTORY:
 ;  01-Sep-2009 18:28:03 Created. Yaswant Pradhan.
 ;  06-Oct-2011 Update header. YP.
+;  11-Jun-2014 Fixed floating point limitation with integer part. YP
 ;
 ;-
 
@@ -49,7 +50,9 @@ function format_values, Array, DecimalPlace, AXISV=axisv
   dp      = keyword_set(DecimalPlace) ? DecimalPlace : 1
   if keyword_set(axisv) then return, strmid(format_axis_values(Array),0,dp)
   
-  base    = fix( Array )          ; integer part of the array
+    
+  ;base    = fix(Array)          ; integer part of the array
+  base    = fix(STRING(Array,'(f0.6)'))          ; integer part of the array
   nl      = n_elements(Array)     ; numer of elements in array
   flt     = Array mod 1           ; floating part of the array
   p       = where( flt ne 0, np ) ; perfect integer values in the array

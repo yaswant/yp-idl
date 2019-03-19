@@ -1,3 +1,73 @@
+function h5d_test, FileName, Name, GROUP=group
+;+
+; :NAME:
+;     h5d_test
+;
+; :PURPOSE:
+;     The H5D_TEST function checks if a DATASET exists in H5 files. 
+;     H5D_TEST returns: 
+;       1 (true), if the specified dataset exists 
+;       0 (false), if the specified dataset exists
+;       -1 if the specified File doesnot exist
+;      
+; :SYNTAX:
+;     Result = h5d_test(Filename, Name)
+;
+;  :PARAMS:
+;    FileName (IN:string) Input hdf5 Filename
+;    Name (IN:String) Input dataset name 
+;         (full path of dataset e.g., 'Product/GM/CloudMask')
+;
+;  :KEYWORDS:
+;    /GROUP Test for existence of Group instead of Dataset 
+; 
+; :REQUIRES:
+;     IDL7.0
+;
+; :EXAMPLES:     
+;
+; :CATEGORIES:
+;     HDF5
+; :
+; - - - - - - - - - - - - - - - - - - - - - - - - - -
+; :COPYRIGHT: (c) Crown Copyright Met Office
+; :HISTORY:
+;  18-Apr-2011 11:46:18 Created. Yaswant Pradhan.
+;
+;-
+   
+  if ~FILE_TEST(FileName) then begin
+    print,' Could not find file: '+FileName
+    return,-1
+  endif
+  
+  fId = H5F_OPEN(FileName)
+    
+  status=0b ; Initialise status  
+
+  catch, err
+  if err ne 0 then begin    
+    catch, /CANCEL
+    status = err ne 0              
+    if (status eq 1) then goto, SKIP_H5D_OPEN       
+  endif
+           
+  dId = KEYWORD_SET(group) ? $
+        H5G_OPEN( fId, Name ) : $
+        H5D_OPEN( fId, Name )
+  SKIP_H5D_OPEN:
+
+  if status eq 0 then begin
+    if KEYWORD_SET(group) then H5G_CLOSE,dId $
+    else H5D_CLOSE, dId
+  endif
+  H5F_CLOSE,fId
+  
+  return, ~status
+end  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 pro write_h5, Data, Filename, $
               VARNAME=vname, $
               ATTRIBUTES=attributes, $
@@ -163,6 +233,28 @@ pro write_h5, Data, Filename, $
         
   endif  
     
+;  status=1b  
+;; Check if the dataset already exists in the file
+;; Retrun meaningful message if so  
+;  if app then begin
+;    status=0b
+;    catch, errExist    
+;    
+;    if errExist ne 0 then begin      
+;      catch, /CANCEL
+;      status = errExist ne 0      
+;      if status eq 0 then return else goto, SKIP_INQ       
+;    endif      
+;           
+;    dId = H5D_OPEN( fId, vName )
+;    SKIP_INQ:
+;  endif
+;    
+;  if status eq 0 then begin
+;    print,' Dataset ['+vName+'] already exists in '+Filename
+;    H5D_CLOSE, dId
+;    return
+;  endif
   
     
 ; 1.0. Create Groups if necessary
@@ -217,6 +309,8 @@ pro write_h5, Data, Filename, $
     dType_id = H5T_IDL_CREATE(Data)
 
     if SIZE(Data,/N_DIMENSIONS) eq N_ELEMENTS(extensible) then begin
+    ; Note: This is a dummy block
+    ; No method to extend the data as yet
       idx = WHERE(extensible, n_idx)
       sze = SIZE(Data,/DIMENSIONS)      
       if n_idx eq 1 then sze[idx] = -1

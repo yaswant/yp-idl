@@ -1,35 +1,38 @@
-pro map_xyz,  x, y, z,          $ ; Polygon Parameters
-              DX=dx,            $ ; width of each polygon in x-unit
-              DY=dy,            $ ; height of each polygon in y-unit
-              NODE_RES=nres,    $ ; distance between each nodes if the polygon
-              PLON=plon,        $ ; crntre longitude
-              PLAT=plat,        $ ; centre latitude
-              ROTATE=prot,      $ ; rotation
-              CCOLOR=cColor,    $ ; continent baoundary colour
-              PATTERN=pat,      $ ; polygon fill pattern
-              PBCOLOR=pbColor,  $ ; polygon border colour
-              PBTHICK=pbThick,  $ ; polygon borther thickness
-              NOMAP=nomap,      $ ; do not use MAP
-              OVERPLOT=overplot,$ ; overplot on an exiting plot window 
-              LIMIT=limit,      $ ; map limit [lat1,lon1,lat2,lon2]             
-              ADD_LOGO=alogo,   $ ; add met office logo [position, size]
-              GRIDON=gridon,    $ ; GRID PARAMETERS
-              GLABEL=glabel,    $ ; grid label intervals (def:1)
-              LONLAB=lonlab,    $ ; latitude value to put longitude labels
-              LATLAB=latlab,    $ ; longitude value to put latitude labels
-              GLONDEL=glondel,  $ ; spacing between meridians of longitude
-              GLATDEL=glatdel,  $ ; spacing between parallels of latitude
-              GLATALIGN=glatalign,$; alignment of the text baseline for lat-label
-              GLINESTYLE=glinestyle,$ ; grid line style
-              GORIENT=gorient,      $ ; grid annotation orientation
-              GLINEOFF=glineoff,    $ ; do not display grid line (only annotate)
-              GCOLOR=gcolor,        $ ; grid colour
-              GCHARSIZE=gcharsize,  $ ; grid label character size
-              GCLIP_TEXT=gclip_text,$ ; 0 turns off clipping of text labels
-              LONS=lons,            $ ; logitude array for grid 
-              LATS=lats,            $ ; latitude array for grid
-              QUICK=quick,          $ ; Quickplot using plots
-              _REF_EXTRA=_extra           ; See MAP_SET              
+pro map_xyz, x,y,z,         $ ; Polygon Parameters
+    DX=dx,                  $ ; width of each polygon in x-unit
+    DY=dy,                  $ ; height of each polygon in y-unit
+    NODE_RES=nres,          $ ; distance between each nodes of the polygon
+    PLON=plon,              $ ; centre longitude
+    PLAT=plat,              $ ; centre latitude
+    ROTATE=prot,            $ ; rotation
+    CCOLOR=cColor,          $ ; continent baoundary colour
+    PATTERN=pat,            $ ; polygon fill pattern
+    PBCOLOR=pbColor,        $ ; polygon border colour
+    PBTHICK=pbThick,        $ ; polygon borther thickness
+    NOMAP=nomap,            $ ; do not use MAP (have PLOT system instead)
+    OVERPLOT=overplot,      $ ; overplot on an exiting plot window 
+    LIMIT=limit,            $ ; map limit [lat1,lon1,lat2,lon2]             
+    ADD_LOGO=alogo,         $ ; add met office logo [position, size]
+    GRIDON=gridon,          $ ; GRID PARAMETERS
+    GLABEL=glabel,          $ ; grid label intervals (def:1)
+    LONLAB=lonlab,          $ ; latitude value to put longitude labels
+    LATLAB=latlab,          $ ; longitude value to put latitude labels
+    GLONDEL=glondel,        $ ; spacing between meridians of longitude
+    GLATDEL=glatdel,        $ ; spacing between parallels of latitude
+    GLATALIGN=glatalign,    $ ; alignment of the text baseline for lat-label
+    GLINESTYLE=glinestyle,  $ ; grid line style
+    GORIENT=gorient,        $ ; grid annotation orientation
+    GLINEOFF=glineoff,      $ ; do not display grid line (only annotate)
+    GCOLOR=gcolor,          $ ; grid colour
+    GCHARSIZE=gcharsize,    $ ; grid label character size
+    GCLIP_TEXT=gclip_text,  $ ; 0 turns off clipping of text labels
+    LONS=lons,              $ ; logitude array for grid 
+    LATS=lats,              $ ; latitude array for grid
+    QUICK=quick,            $ ; Quickplot using plots
+    COUNTRIES=countries,    $ ; Draw political boundaries as of 1993 over plot
+    COASTS=coasts,          $ ; Draw coastlines, islands, and lakes over plot
+    HEXAGONS=hexagons,      $ ; Draw hexagonal cells (def:rectangular)
+    _REF_EXTRA=_extra         ; See MAP_SET              
 
 ;+
 ; :NAME:
@@ -90,9 +93,21 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
 ;                   which can be time consuming if the x,y,z arrays are huge.
 ;                   Setting this keyword will force employ plots using dots 
 ;                   (i.e., psym=3)
+;    /COUNTRIES *   Set this keyword to draw political boundaries on top of 
+;                   the plot
+;    /COASTS    *   Set this keyword to draw coastlines, islands, and lakes 
+;                   instead of the default continent outlines. Note that if 
+;                   you are using the low-resolution map database (if the 
+;                   HIRES keyword is not set), many islands are drawn even 
+;                   when COASTS is not set. If you are using the high-resolution
+;                   map database (if the HIRES keyword is set), no islands are 
+;                   drawn unless COASTS is set                                
 ;    _EXTRA         See valid keywords for MAP_SET (nomap=0) or 
 ;                   PLOT (nomap=1) procedure. 
 ;
+;   * To plot the countries/coastlines below the plot use 
+;       E_CONTINENTS=e_conStr (See example below on how to define e_conStr) 
+;   
 ; :REQUIRES:
 ;     ll_vec2poly.pro
 ;     is_defined.pro
@@ -122,7 +137,7 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
 ; Modify continents parameters (e.g.,fill continents with solid color):
 ; IDL> con = {FILL:1, COLOR:0}
 ; IDL>  map_xyz, [50,0,80], [-20,50,20], [100,150,200], $
-;                 dx=40, dy=40, /GRIDON, E_CONTINET=con, /NOBORDER   
+;                 dx=40, dy=40, /GRIDON, E_CONTINENTS=con, /NOBORDER   
 ;       
 ; :CATEGORIES:
 ;     Plot, Mapping system
@@ -183,6 +198,7 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
   moff  = KEYWORD_SET(nomap)  
   plogo = KEYWORD_SET(alogo)
   gon   = KEYWORD_SET(gridon)
+  _hex  = KEYWORD_SET(hexagons)
 
 ; Set-up PLOT limit:
   limit = is_defined(limit) $
@@ -245,8 +261,8 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
   
 ; -----------------------------------------------------------------------------
 ; Initialise MAP or PLOT coordinate
-; -----------------------------------------------------------------------------
-  if (moff) then begin
+; -----------------------------------------------------------------------------  
+  if moff then begin
       
     ; Set-up PLOT position:       
       if (oplt) then p_advance, pos $
@@ -265,7 +281,12 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
             XMINOR=1, YMINOR=1, NOERASE=oplt,           $
             POSITION=pos, /NODATA, _EXTRA=_extra
   endif else begin
-    
+      
+      if (N_ELEMENTS(_extra) eq 0) then _extra = '' 
+    ; Re-define moff on a mapped system where data needs to be overlaid only:
+      moff = TOTAL(STREGEX(_extra,'NOER',/BOOLEAN)) and $
+            KEYWORD_SET(overplot)
+      
     ; Set-up MAP coordinates:
       MAP_SET, plat,plon,prot, LIMIT=limit,     $
                E_GRID=(gon ? gd : {no_grid:1}), $
@@ -286,7 +307,7 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
   endif else begin
   ; Create Polygon structure for given X and Y array:      
       ll_vec2poly, x,y,llp, DX=dx, DY=dy, NODE_RES=nres, $
-                   /CENTRE, RELAX=moff
+                   /CENTRE, RELAX=moff, HEXAGONS=_hex
   
     ; Fill Map with input data (z):      
       for i=0L,nz-1 do begin
@@ -305,15 +326,15 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
          
 ; Overlay Continet and grid:
 ; Overlay map border in dark-grey color and return map coordinates:    
-  if ~(moff) then begin      
-      MAP_CONTINENTS,/CONTINENTS, COLOR=cColor, HIRES=hr
+  if ~moff then begin
+      MAP_CONTINENTS,/CONTINENTS, COUNTRIES=KEYWORD_SET(countries),$
+          COASTS=KEYWORD_SET(coasts), COLOR=cColor, HIRES=hr
       TVLCT, rr,gg,bb, /GET
       TVLCT, BINDGEN(255),BINDGEN(255),BINDGEN(255)
       
       if ~mboff then begin
           boxDev = FIX(CONVERT_COORD(mp[[0,2,2,0,0]],mp[[1,1,3,3,1]],$
                                     /NORMAL,/TO_DEVICE))      
-          
           
           PLOT,  boxDev[0,*], boxDev[1,*], /DEVICE, /NOERASE, $
                  POSITION=[boxDev[0,0],boxDev[1,0],boxDev[0,1],boxDev[1,2]], $
@@ -350,10 +371,5 @@ pro map_xyz,  x, y, z,          $ ; Polygon Parameters
     
       if (plogo) then logodraw, pl[0], pl[1], alogo[1], /NORMAL, /ONWHITE    
   endif
-
-
-
-  
-           
 
 end  

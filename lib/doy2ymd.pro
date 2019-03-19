@@ -10,7 +10,7 @@ function doy2ymd, Year, DayOfYear,      $
 ;       Convert Year and serial day of year (0-365/6) to YearMonthDay string
 ; 
 ; ARGUMENTS:
-;       Year (IN:Value|Array)
+;       Year (INOUT:Value|Array)
 ;       DayOfYear (IN:Value|Array)
 ; 
 ; KEYWORDS:
@@ -63,7 +63,8 @@ if (n_params() lt 2 and ~KEYWORD_SET(current)) then message, syntax
 if (n_params() lt 2 and KEYWORD_SET(current)) then begin
     Year      = strmid(systime(),20)
     DayOfYear = doy(/QUIET)
-endif  
+    print,'Returning ymd for current doy ('+STRTRIM(DayOfYear,2)+'):'
+endif
   
 nelY  = N_ELEMENTS(Year)
 nelD  = N_ELEMENTS(DayOfYear)

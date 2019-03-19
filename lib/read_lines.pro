@@ -1,6 +1,8 @@
 function read_lines, Filename, $
-          firstLine, lastLine, $
-          SKIPPED=skip, STAUTS=status
+    firstLine, lastLine, $
+    SKIPPED=skip,        $
+    COMPRESS=compress,   $
+    STAUTS=status
 ;+
 ; :NAME:
 ;    	read_lines
@@ -11,17 +13,18 @@ function read_lines, Filename, $
 ;
 ;
 ; :SYNTAX:
-;     Result = read_lines( Filename [,firstLine] [,lastLine] [,STAUTS=variable]
+;     Result = read_lines( Filename [,firstLine] [,lastLine] [,SKIPPED=varaible] 
+;                          [,/COMPRESS] [,STAUTS=variable] )
 ;
-;	 :PARAMS:
+; :PARAMS:
 ;    Filename (IN:String) Input ASCII filename to read in.
 ;    firstLine (IN:Value) Fist line to read; def: 1.
 ;    lastLine (IN:Value) Last line to read; def: Last line in the file.
 ;
-;
-;  :KEYWORDS:
-;    SKIPPED (out:variable) Named variable to store skipped lines; def:[' ']
-;    STAUTS (out:variable) Named variale to store error status.
+; :KEYWORDS:
+;    SKIPPED (out:variable) Named variable to store skipped lines; def:[' ']    
+;    STAUTS (out:variable) Named variale to store error status. 0=OK
+;    /COMPRESS Read from compressed ascii file.
 ;
 ; :REQUIRES:
 ;     None.
@@ -37,6 +40,7 @@ function read_lines, Filename, $
 ; :HISTORY:
 ;  05-Sep-2011 10:53:31 Created. Yaswant Pradhan.
 ;  05-Mar-2012 Code optimised. YP.
+;  22-Jun-2012 Add compress keyword. YP
 ;-
 
 
@@ -56,9 +60,10 @@ function read_lines, Filename, $
   
 ; Parse inputs:
   narg = N_PARAMS()
+  gz   = KEYWORD_SET(compress)
   if (narg lt 1) then message,'Syntax: '+syntax  
   if ~(FILE_TEST(Filename)) then message,Filename +' doesnot exist.'
-  nlines = FILE_LINES(Filename)
+  nlines = FILE_LINES(Filename, COMPRESS=gz)
   if (nlines eq 0) then message,Filename +' is empty.'
   
 
@@ -82,7 +87,7 @@ function read_lines, Filename, $
   str   = STRARR(nL+1)
   skip  = REPLICATE(' ',(firstLine-1)>1)
   
-  openr, lun, Filename, /GET_LUN    
+  openr, lun, Filename, /GET_LUN, COMPRESS=gz
   if (firstLine gt 1) then readf, lun, skip        
   readf, lun, str
   free_lun, lun

@@ -1,13 +1,13 @@
 function h5d_test, FileName, Name, GROUP=group
 ;+
 ; :NAME:
-;     h5d_test
+;    	h5d_test
 ;
 ; :PURPOSE:
 ;     The H5D_TEST function checks if a DATASET exists in H5 files. 
 ;     H5D_TEST returns: 
-;       1 (true), if the specified dataset exists 
-;       0 (false), if the specified dataset exists
+;       1 (true), i.e., the specified dataset exists 
+;       0 (false), i.e., the specified dataset does not exist
 ;       -1 if the specified File doesnot exist
 ;      
 ; :SYNTAX:
@@ -34,7 +34,7 @@ function h5d_test, FileName, Name, GROUP=group
 ;  18-Apr-2011 11:46:18 Created. Yaswant Pradhan.
 ;
 ;-
-   
+
   if ~FILE_TEST(FileName) then begin
     print,' Could not find file: '+FileName
     return,-1
@@ -63,4 +63,5 @@ function h5d_test, FileName, Name, GROUP=group
   H5F_CLOSE,fId
   
   return, ~status
+
 end  

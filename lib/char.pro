@@ -194,7 +194,7 @@ FUNCTION char, letter, HELP=help
     
 ; Do you wish to see an example?
   IF KEYWORD_SET(help) THEN BEGIN
-    decomp
+    device, decomposed=0
     loadct, 0
     char_help
     RETURN, ""

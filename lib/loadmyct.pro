@@ -143,43 +143,42 @@ PRO loadmyct, index, BOTTOM=bottom, FILE=ct_file, NCOLORS=ncolors, $
 ;-
 
 ; Get old system settings:
-  __quiet = !QUIET
-  __dName = strupcase(!d.NAME)
-  device, GET_DECOMPOSED=__decomp
+__quiet = !QUIET
+__dName = strupcase(!d.NAME)
+
+device, GET_DECOMPOSED=__decomp
 ;  __dRetn = (__dName eq 'WIN') ? pref_get('IDL_GR_WIN_RETAIN') : $
 ;                                 pref_get('IDL_GR_X_RETAIN')
 
 ; Parse keywords:  
-  s = keyword_set(silent)  
-  !QUIET  = s ? 1 : 0
-        
-  if keyword_set(brewer) then begin
-      which, 'brewer.tbl', RES=brewer
-      ct_file = brewer
-  endif    
+s = keyword_set(silent)  
+!QUIET  = s ? 1 : 0
 
-  if ~keyword_set(ct_file) then begin
-      which, 'mycolors.tbl', RES=coltab
-      ct_file = coltab
-  endif
-  
+
+; Set color table: 
+ct_file = (n_elements(ct_file) ne 0) $
+          ? strtrim(ct_file[0],2) $
+          : keyword_set(brewer) $
+            ? '/home/h05/fra6/myidl_lib/myct/brewer/brewer.tbl' $
+            : '/home/h05/fra6/myidl_lib/myct/mycolors.tbl'
+
+
 ; Decomposed colour (all):
-  device, DECOMPOSED=0
-; Backing store for (X Windows system):
-  if (__dName eq 'X') then device, RETAIN=2
+device, DECOMPOSED=0
 
-  if ~keyword_set(ncolors) then ncolors=!d.table_size
-  if ~keyword_set(bottom) then bottom=0
+
+; Backing store for (X Windows system):
+if (__dName eq 'X') then device, RETAIN=2
+if ~keyword_set(ncolors) then ncolors=!d.table_size
+if ~keyword_set(bottom) then bottom=0
+
 
 ; Load colour table:
-  case n_params() of
+case n_params() of
     1   : loadct, index, FILE=ct_file, BOTTOM=bottom, NCOLORS=ncolors, SILENT=s
     else: loadct, FILE=ct_file, BOTTOM=bottom, NCOLORS=ncolors, SILENT=s
-  endcase
+endcase
 
-; Reset defaults:
-;  if (__dName eq 'X' or __dName eq 'WIN') then device, RETAIN=__dRetn
-;  device, DECOMPOSED=__decomp
-  !QUIET  =__quiet
+!QUIET = __quiet
 
 END
